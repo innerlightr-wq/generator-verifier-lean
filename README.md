@@ -7,6 +7,8 @@ algebraic operating-region structure from:
 > Generator-Verifier Systems: Capacity Matching, Queueing Margins, and
 > Effective Independence.*
 
+**Zenodo:** https://doi.org/10.5281/zenodo.22342517
+
 **Scope of this first milestone.** This is not a formalization of M/M/1
 queueing theory. It formalizes the exact real-algebra skeleton of the
 paper's operating-region argument: capacity matching, the capacity-margin
