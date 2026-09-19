@@ -9,6 +9,22 @@ algebraic operating-region structure from:
 
 **Zenodo:** https://doi.org/10.5281/zenodo.22342517
 
+**A note on the name.** Here "generator" and "verifier" are **agent roles in a
+capacity model**, not a producer-and-checker trust architecture. `N` agents are
+split into a fraction `p` that *generates* work at rate `g` each and a fraction
+`1-p` that *verifies* it at rate `v` each; `p` is the design variable and
+`p_c = v/(g+v)` is the split at which the two aggregate rates balance. Nothing
+here produces a candidate artifact, emits a certificate, or checks one: there is
+no untrusted producer, no certificate format, and no checker. Readers arriving from
+formal methods should note in particular that this is **not** an instance of the
+LCF architecture or of certifying computation — the pattern in which a large
+untrusted search emits a witness that a small trusted checker validates
+([Gordon–Milner–Wadsworth 1979][lcf]; [McConnell–Mehlhorn–Näher–Schweitzer
+2011][certalg]). That architecture is classical and is not what this development
+implements. The only trust boundary present is the ordinary one for a Lean
+formalization: the kernel, mathlib, and the definitions below. See
+[`docs/TRUST_BOUNDARY.md`](docs/TRUST_BOUNDARY.md).
+
 **Scope of this first milestone.** This is not a formalization of M/M/1
 queueing theory. It formalizes the exact real-algebra skeleton of the
 paper's operating-region argument: capacity matching, the capacity-margin
@@ -139,6 +155,66 @@ sections):
 It verifies exact statements inside the stated deterministic/algebraic
 model. Reading those statements as facts about real deployed systems
 requires the EXTERNAL MODEL INPUT items above to actually hold.
+
+## Prior art
+
+The mathematics formalized here is classical; what is machine-checked is the
+exact algebra, not the underlying ideas. Full provenance is in
+[`docs/NOVELTY_AND_PROVENANCE.md`](docs/NOVELTY_AND_PROVENANCE.md), the
+conceptual ancestry in
+[`docs/ARCHITECTURE_ANCESTRY.md`](docs/ARCHITECTURE_ANCESTRY.md), and verified
+bibliographic records in [`references.bib`](references.bib). The load-bearing
+attributions:
+
+**Capacity matching.** `p_c = v/(g+v)` maximizing `min(pNg,(1-p)Nv)` is the
+classical two-stage line-balancing optimum: equalize the stage rates. The
+formalization adds a kernel-checked statement, not the result.
+
+**The critical system size.** `N_crit` answers a long-studied question — how
+many servers does a system need to hold a service level — and answers it in the
+deterministic first-order case, by solving a linear inequality in `N`. The
+stochastic form, including the `sqrt(load)` correction this development
+deliberately omits, is [Halfin–Whitt 1981][hw] and
+[Borst–Mandelbaum–Reiman 2004][bmr]. M/M/1 stability and `W = 1/(mu-lambda)`,
+both listed under EXTERNAL MODEL INPUT above, are standard (Kleinrock,
+*Queueing Systems, Volume 1: Theory*, Wiley, 1975; no DOI assigned).
+
+**Effective independence.** The structure of `J(p)` is the classical
+correlated-average variance form: the correlated term `p^2 sigma_c^2` carries no
+factor of `1/N` while the independent terms do, so the variance cannot be driven
+to zero by adding agents and the optimal generator fraction decays as `1/N`.
+This is the design effect and effective sample size (Kish, *Survey Sampling*,
+Wiley, 1965; no DOI assigned), the intraclass-correlation decomposition
+([Shrout–Fleiss 1979][sf]), the Condorcet
+jury theorem with correlated votes ([Ladha 1992][ladha]), and the
+bias–variance–covariance decomposition of ensembles
+([Ueda–Nakano 1996][un]) — the last of which is a machine-learning result three
+decades older than the current multi-agent literature. What is verified here is
+the optimizer and the scaling laws *of the paper's stated quadratic*.
+
+**Discrete thresholds.** The one result with no clean single ancestor is
+`ceil_Ncrit_le_NminDiscrete` together with its explicit strict witness: rounding
+the continuous threshold up is not in general sufficient once agent counts are
+integers. This is the integer-staffing phenomenon, stated exactly.
+
+**Platform.** Lean 4 ([de Moura–Ullrich 2021][lean4]) and mathlib
+([The mathlib Community 2020][mathlib]).
+
+**Terminology.** "Generator–verifier" is already standard usage in the
+formal-AI literature for a producer paired with a proof-assistant checker
+(e.g. [LeanDojo][leandojo]); the sense used here is the capacity-model one
+described at the top of this file.
+
+[lcf]: https://doi.org/10.1007/3-540-09724-4
+[certalg]: https://doi.org/10.1016/j.cosrev.2010.09.009
+[hw]: https://doi.org/10.1287/opre.29.3.567
+[bmr]: https://doi.org/10.1287/opre.1030.0081
+[sf]: https://doi.org/10.1037/0033-2909.86.2.420
+[ladha]: https://doi.org/10.2307/2111584
+[un]: https://doi.org/10.1109/ICNN.1996.548872
+[lean4]: https://doi.org/10.1007/978-3-030-79876-5_37
+[mathlib]: https://doi.org/10.1145/3372885.3373824
+[leandojo]: https://doi.org/10.52202/075280-0944
 
 ## Layout
 
